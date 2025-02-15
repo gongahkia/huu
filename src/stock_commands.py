@@ -77,7 +77,7 @@ def setup_stock_commands(bot, supabase):
                 current_price = info.get('currentPrice', 'N/A')
                 if current_price != 'N/A':
                     current_price = f"${current_price:.2f}"
-                stock_list.append(f"{stock['ticker']}: {current_price}")
+                stock_list.append(f"{stock['name']} ({stock['ticker']}): {current_price}")
             
             stock_message = "Your stocks:\n" + "\n".join(stock_list)
             await ctx.send(stock_message)

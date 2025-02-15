@@ -2,25 +2,85 @@
 
 # `Huu`
 
-> TODO add description
+Discord bot that monitors your Stock and Cryptocurrency prices and provides optional hourly updates. 
 
-## Dependancies
+Relies on the following [APIs](#dependancies).
 
-> TODO add documentation for the relevant APIs being used.
+<div align="center">
+    <img src="./asset/screenshot/huu-profile.png" width=50%>
+</div>
 
 ## Commands
 
-> TODO add markdown table here
+| Command | Description | Example |
+| :--- | :--- | :---: |
+| `!find_stock <ticker>` | find information about a specific stock | ![](./asset/screenshot/find_stock.png) |
+| `!add_stock <ticker>` | add a stock to your watchlist | ![](./asset/screenshot/add_stock.png) |
+| `!remove_stock <ticker>` | remove a stock from your watchlist | ![](./asset/screenshot/remove_stock.png) |
+| `!list_stocks` | list all stocks in your watchlist | ![](./asset/screenshot/list_stocks.png) |
+| `!find_coin <coin_id>` | find information about a specific cryptocurrency | ![](./asset/screenshot/find_coin.png) |
+| `!add_coin <coin_id>` | add a cryptocurrency to your watchlist | ![](./asset/screenshot/add_coin.png) |
+| `!remove_coin <coin_id>` | remove a cryptocurrency from your watchlist | ![](./asset/screenshot/remove_coin.png) |
+| `!list_coins` | list all cryptocurrencies in your watchlist | ![](./asset/screenshot/list_coins.png) |
+| `!toggle_updates` | toggle hourly price updates on or off | ![](./asset/screenshot/toggle_updates.png) ![](./asset/screenshot/hourly-update.png) |
 
 ## Architecture
 
 ### Overview
 
-> TODO add mermaid diagram
+```mermaid
+sequenceDiagram
+    actor User
+    participant DiscordBot
+    participant FastAPI
+    participant Supabase
+    participant YahooFinance
+    participant CoinGecko
+
+    User->>DiscordBot: Send command
+    DiscordBot->>FastAPI: Forward command
+    FastAPI->>Supabase: Authenticate user
+    Supabase-->>FastAPI: Authentication result
+    alt Stock command
+        FastAPI->>YahooFinance: Fetch stock data
+        YahooFinance-->>FastAPI: Return stock data
+    else Crypto command
+        FastAPI->>CoinGecko: Fetch crypto data
+        CoinGecko-->>FastAPI: Return crypto data
+    end
+    FastAPI->>Supabase: Update user data (if needed)
+    Supabase-->>FastAPI: Confirmation
+    FastAPI-->>DiscordBot: Send response
+    DiscordBot-->>User: Display result
+```
 
 ### DB structure
 
-> TODO add mermaid diagram
+```mermaid
+erDiagram
+    USERS {
+        BIGSERIAL id PK
+        TEXT user_id UK
+        BOOLEAN price_updates
+        TIMESTAMP created_at
+    }
+    STOCKS {
+        BIGSERIAL id PK
+        TEXT user_id FK
+        TEXT ticker
+        TEXT name
+        TIMESTAMP created_at
+    }
+    COINS {
+        BIGSERIAL id PK
+        TEXT user_id FK
+        TEXT coin_id
+        TEXT name
+        TIMESTAMP created_at
+    }
+    USERS ||--o{ STOCKS : has
+    USERS ||--o{ COINS : has
+```
 
 ## Usage
 
@@ -50,6 +110,18 @@ $ source myenv source/bin/activate
 $ pip install -r requirements.txt
 $ make
 ```
+
+## Dependancies
+
+`Huu` currently relies on the following APIs.
+
+* [Yahoo Finance API](https://developer.yahoo.com/api/)
+* [Finnhub Stock API](https://finnhub.io/)
+
+Alternatives include the below.
+
+* [CoinGecko API](https://www.coingecko.com/en/api)
+* [Binance API](https://developers.binance.com/docs/binance-spot-api-docs/rest-api)
 
 ## Reference
 

@@ -65,7 +65,7 @@ def setup_coin_commands(bot, supabase):
                     price = f"${info['usd']:.2f}"
                 except Exception:
                     price = 'N/A'
-                coin_list.append(f"{coin['coin_id']}: {price}")
+                coin_list.append(f"{coin['name']} ({coin['coin_id']}): {price}")
             
             coin_message = "Your coins:\n" + "\n".join(coin_list)
             await ctx.send(coin_message)
