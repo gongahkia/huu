@@ -26,10 +26,15 @@
 
 The below instructions are for locally hosting `Huu`.
 
-1. Create a discord application here and a bot for that application.
-2. Enable the relevant permissions under the Bot tab.
-3. Create the supabase tables with the [`create.sql`](./src/create.sql) script.
-4. Place your discord bot token, supabase URL and supabase key in a `.env` file within `./src/`.
+1. Create a [Discord application](https://discord.com/developers/applications) and a bot for that application.
+2. Enable the following permissions under *Priviledged Gateway Intents* in the Bot tab.
+    1. Presence Intent
+    2. Server Members Intent
+    3. Message Content Intent
+3. Enable the following permissions under *Bot Permissions* in the Bot tab.
+    1. Send Messages
+4. Create the [Supabase](https://supabase.com/dashboard/projects) tables with the [`create.sql`](./src/create.sql) script.
+5. Place your Discord bot token, Supabase URL and Supabase key in a `.env` file within `./src/`.
 
 ```env
 DISCORD_TOKEN=XXX
@@ -37,7 +42,7 @@ SUPABASE_URL=XXX
 SUPABASE_KEY=XXX
 ```
 
-5. Run the following.
+6. Run the following.
 
 ```console
 $ python3 -m venv myenv
