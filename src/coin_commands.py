@@ -52,22 +52,22 @@ def setup_coin_commands(bot, supabase):
 
     @bot.command(name='list_coins')
     async def list_coins(ctx):
-        await ensure_user_exists(str(ctx.author.id))
         try:
             coins = supabase.table('coins').select('*').eq('user_id', str(ctx.author.id)).execute()
             if not coins.data:
                 await ctx.send("You don't have any coins in your watchlist.")
                 return
             
-            data = []
+            coin_list = []
             for coin in coins.data:
                 try:
                     info = cg.get_price(ids=coin['coin_id'], vs_currencies='usd')[coin['coin_id']]
-                    data.append([coin['coin_id'], f"${info['usd']:.2f}"])
+                    price = f"${info['usd']:.2f}"
                 except Exception:
-                    data.append([coin['coin_id'], 'N/A'])
+                    price = 'N/A'
+                coin_list.append(f"{coin['coin_id']}: {price}")
             
-            table = tabulate(data, headers=['Coin', 'Price (USD)'], tablefmt='pretty')
-            await ctx.send(f"``````")
+            coin_message = "Your coins:\n" + "\n".join(coin_list)
+            await ctx.send(coin_message)
         except Exception as e:
             await ctx.send(f"An error occurred while listing coins: {str(e)}")

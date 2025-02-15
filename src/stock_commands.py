@@ -65,27 +65,21 @@ def setup_stock_commands(bot, supabase):
 
     @bot.command(name='list_stocks')
     async def list_stocks(ctx):
-        await ensure_user_exists(str(ctx.author.id))
         try:
             stocks = supabase.table('stocks').select('*').eq('user_id', str(ctx.author.id)).execute()
             if not stocks.data:
                 await ctx.send("You don't have any stocks in your watchlist.")
                 return
             
-            data = []
+            stock_list = []
             for stock in stocks.data:
-                try:
-                    info = yf.Ticker(stock['ticker']).info
-                    data.append([
-                        stock['ticker'],
-                        f"${info.get('currentPrice', 'N/A'):.2f}",
-                        f"${info.get('dayHigh', 'N/A'):.2f}",
-                        f"${info.get('dayLow', 'N/A'):.2f}"
-                    ])
-                except Exception:
-                    data.append([stock['ticker'], 'N/A', 'N/A', 'N/A'])
+                info = yf.Ticker(stock['ticker']).info
+                current_price = info.get('currentPrice', 'N/A')
+                if current_price != 'N/A':
+                    current_price = f"${current_price:.2f}"
+                stock_list.append(f"{stock['ticker']}: {current_price}")
             
-            table = tabulate(data, headers=['Ticker', 'Price', 'Day High', 'Day Low'], tablefmt='pretty')
-            await ctx.send(f"``````")
+            stock_message = "Your stocks:\n" + "\n".join(stock_list)
+            await ctx.send(stock_message)
         except Exception as e:
             await ctx.send(f"An error occurred while listing stocks: {str(e)}")
