@@ -4,8 +4,6 @@
 
 Discord bot that monitors your Stock and Cryptocurrency prices and provides optional hourly updates. 
 
-Relies on the following [APIs](#dependancies).
-
 <div align="center">
     <img src="./asset/screenshot/huu-profile.png" width=50%>
 </div>
