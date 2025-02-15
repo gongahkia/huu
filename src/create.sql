@@ -37,3 +37,5 @@ ADD CONSTRAINT fk_coins_user
 FOREIGN KEY (user_id)
 REFERENCES users(user_id)
 ON DELETE CASCADE;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.stocks public.coins public.users TO anon, authenticated, service_role;
