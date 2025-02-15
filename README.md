@@ -48,7 +48,7 @@ SUPABASE_KEY=XXX
 $ python3 -m venv myenv
 $ source myenv source/bin/activate
 $ pip install -r requirements.txt
-$ python3 src/main.py
+$ make
 ```
 
 ## Reference
